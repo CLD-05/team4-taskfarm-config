@@ -1,0 +1,67 @@
+# 기본 내장 룰셋 상속
+# ⚠️ useDefault=true 삭제 금지
+[extend]
+useDefault = true
+
+# ---------------------------------------------------------------------
+# 팀 전용 추가 룰
+# ---------------------------------------------------------------------
+
+# Gemini API 키
+[[rules]]
+id = "team4-gemini-api-key"
+description = "Google Gemini API Key"
+regex = '''AIza[0-9A-Za-z\-_]{35}'''
+keywords = ["AIza", "gemini", "GEMINI"]
+
+# JWT 서명 시크릿
+[[rules]]
+id = "team4-jwt-secret"
+description = "JWT signing secret in properties"
+regex = '''(?i)(jwt[._-]?secret|jwt[._-]?key)\s*[:=]\s*['"]?[A-Za-z0-9+/=_\-]{16,}['"]?'''
+keywords = ["jwt.secret", "jwt-secret", "jwtSecret", "JWT_SECRET"]
+
+# DB 비밀번호 (tfvars, properties, yml 공통)
+[[rules]]
+id = "team4-db-password"
+description = "Hardcoded DB password"
+regex = '''(?i)(db[._-]?pass(word)?|spring\.datasource\.password|mysql[._-]?pass(word)?)\s*[:=]\s*['"]?[^\s'"]{6,}['"]?'''
+keywords = ["password", "datasource.password", "DB_PASS"]
+
+# Redis 비밀번호
+[[rules]]
+id = "team4-redis-password"
+description = "Hardcoded Redis password"
+regex = '''(?i)(redis[._-]?pass(word)?|spring\.redis\.password)\s*[:=]\s*['"]?[^\s'"]{6,}['"]?'''
+keywords = ["redis.password", "REDIS_PASS"]
+
+# ---------------------------------------------------------------------
+# Allowlist — 오탐 방지
+# ---------------------------------------------------------------------
+[allowlist]
+description = "team4 공용 예외"
+
+# 무시할 경로
+paths = [
+    '''\.terraform/''',
+    '''.*\.tfstate$''',
+    '''.*\.tfstate\.backup$''',
+    '''.*/build/.*''',
+    '''.*/target/.*''',
+    '''.*/node_modules/.*''',
+    '''.*/test/.*resources/.*''',
+    '''.*\.example$''',
+    '''.*README.*''',
+    '''\.gitleaks\.toml$'''
+]
+
+# 무시할 값 패턴
+regexes = [
+    '''(?i)(your[_-]?|example[_-]?|dummy[_-]?|test[_-]?|changeme|xxxx+|placeholder)''',
+    '''AIzaSyEXAMPLE.*''',
+    '''password\s*[:=]\s*['"]?(changeme|password|example|test)['"]?'''
+]
+
+# 무시할 커밋 (이미 rotate 완료한 과거 노출만 SHA 등록)
+#   ⚠️ 과거 노출 시크릿은 "무시"가 아니라 "키 폐기(rotate) 먼저" 후 등록.
+# commits = [ "커밋SHA" ]
