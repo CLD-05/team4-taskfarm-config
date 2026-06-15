@@ -1,0 +1,29 @@
+# =====================================================================
+# gitleaks.yml — team4 공용 시크릿 스캔 워크플로
+# 동작: PR·push마다 루트의 .gitleaks.toml 룰로 스캔. 발견 시 실패.
+# =====================================================================
+name: gitleaks
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "true"
+        # 루트 .gitleaks.toml 자동 인식. 시크릿 발견 시 실패 → PR 머지 차단.
