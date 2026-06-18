@@ -1,0 +1,16 @@
+# =====================================================================
+# [담당2] admin 앱 - base Deployment
+# =====================================================================
+# 목표: admin(Spring Boot) 파드 정의. user의 deployment.yaml과 구조 동일.
+#
+# ⚠️ user와 다른 점 (꼭 확인!):
+#  - 포트: admin/Dockerfile의 EXPOSE 확인 (user와 다름)
+#  - context-path: admin은 /admin (admin yml의 server.servlet.context-path)
+#  - 그래서 probe 경로: /admin/actuator/health  ← user(/actuator/health)와 다름!
+#  - image: admin ECR 레포
+#  - configmap/secret 이름: taskfarm-admin-config / taskfarm-admin-secret
+#
+# 작성할 것: user/base/deployment.yaml 가이드 참고 + 위 차이점 반영
+# =====================================================================
+
+# TODO: 여기에 admin Deployment 작성 (포트·probe 경로 주의)

@@ -1,0 +1,20 @@
+# =====================================================================
+# [담당1] user overlay dev
+# =====================================================================
+# 목표: base를 가져와 dev에 맞게 패치.
+#
+# 작성할 것:
+#  - resources: [../../base]
+#  - images: ECR 경로 + newTag: dev (CI가 갱신할 자리)
+#  - patches: patch-dev.yaml (Deployment 타겟)
+#  - configMapGenerator (behavior: merge): dev 환경변수 덮어쓰기
+#     예) SPRING_PROFILES_ACTIVE, DB_HOST(dev RDS), REDIS_HOST(dev Redis)
+#
+# 주의:
+#  - ⚠️ dev엔 ingress.yaml 없음! (port-forward 접근) — resources에 ingress 넣지 말 것
+#  - DB_HOST 등은 terraform output의 dev 엔드포인트로 (합의 후 채움)
+#
+# 참고: kustomize images / configMapGenerator merge
+# =====================================================================
+
+# TODO: 여기에 dev kustomization 작성

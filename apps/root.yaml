@@ -1,0 +1,28 @@
+# =====================================================================
+# [담당3] ArgoCD Root Application (app-of-apps 패턴)
+# =====================================================================
+# 목표: 이 Application 하나만 ArgoCD에 등록하면, apps/ 하위의 다른
+#       Application들(user-dev, user-prod, ...)을 자동으로 등록·동기화.
+#       → 앱 추가 시 apps/에 yaml만 넣으면 됨.
+#
+# 작성할 것:
+#  - apiVersion: argoproj.io/v1alpha1, kind: Application
+#  - metadata.name (예: taskfarm-root), namespace: argocd
+#  - metadata.finalizers: 앱 삭제 시 하위 리소스 정리 (resources-finalizer.argocd.argoproj.io)
+#  - spec.source:
+#     - repoURL: 이 레포(team4-taskfarm-config) URL
+#     - targetRevision: main
+#     - path: apps          ← 이 디렉토리를 watch
+#     - directory.recurse: true  ← 하위 yaml 전부
+#  - spec.destination: server(in-cluster), namespace: argocd
+#  - spec.syncPolicy.automated: prune + selfHeal
+#
+# 주의:
+#  - 인프라 argocd.tf의 root app과 역할 겹침 → 지훈님과 합의
+#    (권장: terraform은 ArgoCD '설치'만, 앱 정의는 이 레포)
+#  - 인프라 argocd.tf의 path 변수를 'apps'로 맞출 것
+#
+# 참고: https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/
+# =====================================================================
+
+# TODO: 여기에 root Application 작성

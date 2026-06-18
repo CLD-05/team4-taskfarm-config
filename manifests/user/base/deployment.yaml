@@ -1,0 +1,26 @@
+# =====================================================================
+# [담당1] user 앱 - base Deployment (환경 공통)
+# =====================================================================
+# 목표: user(Spring Boot) 파드 정의. dev/prod 공통만. 환경 차이는 overlay.
+#
+# 작성할 것:
+#  - kind: Deployment, metadata.name: taskfarm-user, labels
+#  - spec.selector.matchLabels ↔ template.labels 일치
+#  - spec.replicas: base는 1 (환경별은 overlay에서)
+#  - containers:
+#     - name, image (ECR 경로 — 태그는 overlay가 덮어쓰니 placeholder)
+#     - ports.containerPort: ??  ← user/Dockerfile의 EXPOSE 확인
+#     - envFrom: configMapRef(taskfarm-user-config) + secretRef(taskfarm-user-secret)
+#     - readinessProbe / livenessProbe: httpGet path=/actuator/health
+#     - resources: requests/limits (base는 최소, overlay에서 키움)
+#
+# 힌트:
+#  - 포트는 user/Dockerfile EXPOSE 확인 (admin과 다름)
+#  - probe 경로는 Spring actuator. user는 context-path 없음 → /actuator/health
+#  - image 태그 직접 박지 말 것 (CI가 overlay에서 갱신)
+#  - envFrom의 secret 이름 = externalsecret.yaml의 target.name과 일치시킬 것
+#
+# 참고: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+# =====================================================================
+
+# TODO: 여기에 Deployment 작성

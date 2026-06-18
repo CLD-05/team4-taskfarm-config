@@ -1,0 +1,19 @@
+# =====================================================================
+# [담당1] user 앱 - base ConfigMap (비밀 아닌 환경변수)
+# =====================================================================
+# 목표: application.yml의 ${ENV} 에 매핑되는 비밀 아닌 설정.
+#
+# 작성할 것 (application.yml의 ${} 변수 참고):
+#  - kind: ConfigMap, metadata.name: taskfarm-user-config
+#  - data: 공통(환경 무관) 값들
+#     예) DB_NAME, DB_PORT, REDIS_PORT, JPA_DDL_AUTO, SPRING_PROFILES_ACTIVE 등
+#
+# 주의:
+#  - ⚠️ 비밀(JWT_SECRET, GEMINI_API_KEY, DB_PASSWORD)은 절대 여기 넣지 말 것 → externalsecret.yaml
+#  - 환경별로 다른 값(DB_HOST, REDIS_HOST 등)은 여기 말고 overlay에서 (그래야 dev/prod 분리)
+#  - JPA_DDL_AUTO: 운영은 validate. (테이블은 사전 생성 전제)
+#
+# 힌트: application.yml에서 ${DB_HOST:...} 처럼 ${}로 된 것들이 주입 대상
+# =====================================================================
+
+# TODO: 여기에 ConfigMap 작성 (공통 값만)

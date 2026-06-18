@@ -1,0 +1,16 @@
+# =====================================================================
+# [담당1] user 앱 - base Service
+# =====================================================================
+# 목표: user 파드 앞단 진입점(ClusterIP). dev는 여기에 port-forward, prod는 Ingress가 가리킴.
+#
+# 작성할 것:
+#  - kind: Service, metadata.name: taskfarm-user
+#  - spec.type: ClusterIP  (⚠️ LoadBalancer 쓰지 말 것 — prod는 ALB Ingress가 처리)
+#  - spec.selector: deployment의 파드 라벨과 일치
+#  - spec.ports: port(서비스), targetPort(컨테이너 포트 — deployment와 동일)
+#
+# 힌트: targetPort = deployment containerPort와 같아야 함
+# 참고: https://kubernetes.io/docs/concepts/services-networking/service/
+# =====================================================================
+
+# TODO: 여기에 Service 작성

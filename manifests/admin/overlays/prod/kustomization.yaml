@@ -1,0 +1,9 @@
+# =====================================================================
+# [담당2] admin overlay prod
+# =====================================================================
+# 목표: base + 고가용성 + ingress. user prod overlay와 동일 구조.
+# ⚠️ resources에 ingress.yaml 포함. images는 admin ECR + prod 태그.
+# 작성할 것: user/overlays/prod/kustomization.yaml 참고
+# =====================================================================
+
+# TODO: 여기에 admin prod kustomization 작성

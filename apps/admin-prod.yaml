@@ -1,0 +1,8 @@
+# =====================================================================
+# [담당3] admin 앱 - prod 환경 Application
+# =====================================================================
+# 목표: ArgoCD가 manifests/admin/overlays/prod 를 동기화.
+# 작성할 것: path=manifests/admin/overlays/prod, name=taskfarm-admin-prod
+# =====================================================================
+
+# TODO: 여기에 admin-prod Application 작성

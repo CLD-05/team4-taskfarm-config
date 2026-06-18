@@ -1,0 +1,9 @@
+# =====================================================================
+# [담당3] admin 앱 - dev 환경 Application
+# =====================================================================
+# 목표: ArgoCD가 manifests/admin/overlays/dev 를 동기화.
+# 작성할 것: user-dev.yaml과 동일 구조, path=manifests/admin/overlays/dev,
+#            name=taskfarm-admin-dev
+# =====================================================================
+
+# TODO: 여기에 admin-dev Application 작성

@@ -1,0 +1,14 @@
+# =====================================================================
+# [담당3] user 앱 - prod 환경 Application
+# =====================================================================
+# 목표: ArgoCD가 manifests/user/overlays/prod 를 동기화.
+#
+# 작성할 것:
+#  - user-dev.yaml과 동일 구조, path만 manifests/user/overlays/prod
+#  - metadata.name: taskfarm-user-prod
+#
+# 주의:
+#  - prod는 prune을 신중히 (운영 리소스 실수 삭제 방지) — 팀 정책 따라 manual sync 고려 가능
+# =====================================================================
+
+# TODO: 여기에 user-prod Application 작성

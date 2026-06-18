@@ -1,0 +1,18 @@
+# =====================================================================
+# [담당1] user overlay prod
+# =====================================================================
+# 목표: base + 고가용성 + ALB ingress.
+#
+# 작성할 것:
+#  - resources: [../../base, ingress.yaml]   ← prod는 ingress 추가!
+#  - images: ECR + newTag: prod
+#  - patches: patch-prod.yaml
+#  - configMapGenerator(merge): prod 환경변수
+#     예) SPRING_PROFILES_ACTIVE, DB_HOST(prod), DB_REPLICA_HOST(읽기분리), REDIS_HOST
+#
+# 주의:
+#  - ⚠️ dev와 달리 ingress.yaml을 resources에 포함
+#  - DB_REPLICA_HOST는 prod만 (읽기 전용 엔드포인트 — 읽기 부하 분리)
+# =====================================================================
+
+# TODO: 여기에 prod kustomization 작성

@@ -1,0 +1,21 @@
+# =====================================================================
+# [담당1] user prod Ingress (ALB) — prod 전용!
+# =====================================================================
+# 목표: 외부 → ALB → user 서비스. ⚠️ dev엔 없음 (port-forward).
+# 전제: AWS Load Balancer Controller 설치됨 (platform-addons, A 담당).
+#
+# 작성할 것:
+#  - kind: Ingress
+#  - metadata.annotations (ALB 설정):
+#     - alb.ingress.kubernetes.io/scheme: internet-facing
+#     - alb.ingress.kubernetes.io/target-type: ip   ← Fargate는 ip 타겟
+#     - listen-ports (HTTP 80 / HTTPS 443)
+#     - certificate-arn (ACM — HTTPS)
+#  - spec.ingressClassName: alb
+#  - spec.rules: host(taskfarm.site), path /, backend → taskfarm-user 서비스
+#
+# 주의: target-type은 ip (Fargate/IP 모드). instance 아님.
+# 참고: https://kubernetes-sigs.github.io/aws-load-balancer-controller/
+# =====================================================================
+
+# TODO: 여기에 Ingress 작성

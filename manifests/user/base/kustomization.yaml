@@ -1,0 +1,14 @@
+# =====================================================================
+# [담당1] user base - kustomization
+# =====================================================================
+# 목표: base의 리소스들을 하나로 묶음. overlay가 이걸 참조.
+#
+# 작성할 것:
+#  - apiVersion: kustomize.config.k8s.io/v1beta1, kind: Kustomization
+#  - resources: [deployment.yaml, service.yaml, configmap.yaml, externalsecret.yaml]
+#  - (선택) commonLabels: app.kubernetes.io/part-of, component 등
+#
+# 참고: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/
+# =====================================================================
+
+# TODO: 여기에 kustomization 작성

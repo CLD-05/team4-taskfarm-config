@@ -1,0 +1,19 @@
+# =====================================================================
+# [담당3] user 앱 - dev 환경 Application
+# =====================================================================
+# 목표: ArgoCD가 manifests/user/overlays/dev 를 클러스터에 동기화.
+#
+# 작성할 것:
+#  - kind: Application, metadata.name (예: taskfarm-user-dev), namespace: argocd
+#  - spec.source: repoURL, targetRevision=main, path=manifests/user/overlays/dev
+#  - spec.destination.namespace: 앱이 뜰 ns (예: taskfarm)
+#  - spec.syncPolicy.automated: prune + selfHeal
+#
+# 주의:
+#  - ⚠️ dev는 Fargate — destination namespace가 app-fargate-profile에 포함돼야 파드가 뜸
+#  - syncOptions: CreateNamespace=true
+#
+# 참고: Kustomize는 path만 가리키면 ArgoCD가 자동 인식
+# =====================================================================
+
+# TODO: 여기에 user-dev Application 작성
