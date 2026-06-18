@@ -6,3 +6,26 @@
 # =====================================================================
 
 # TODO: 여기에 admin-prod Application 작성
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: taskfarm-admin-prod
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/CLD-05/team4-taskfarm-config.git
+    targetRevision: main
+    path: manifests/admin/overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: taskfarm-prod
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
