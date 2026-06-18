@@ -1,6 +1,17 @@
-# =====================================================================
-# [담당2] admin prod 패치 — HA (replicas 2+, 리소스 크게)
-# 작성할 것: user/overlays/prod/patch-prod.yaml 참고, name=taskfarm-admin
-# =====================================================================
-
-# TODO: 여기에 admin prod 패치 작성
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskfarm-admin
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: taskfarm-admin
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "1"
+              memory: 2Gi

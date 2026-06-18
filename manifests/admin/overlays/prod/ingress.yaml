@@ -1,15 +1,27 @@
-# =====================================================================
-# [담당2] admin prod Ingress (ALB) — prod 전용!
-# =====================================================================
-# 목표: 외부 → ALB → admin 서비스.
-#
-# ⚠️ user Ingress와 핵심 차이:
-#  - admin은 /admin 경로로 라우팅 (admin context-path와 정합)
-#    → 같은 도메인 + path:/admin, 또는 admin.taskfarm.site 서브도메인 (팀 합의)
-#  - ⚠️ 보안 강화 권장 (현직 피드백): admin은 inbound-cidrs로 IP 제한 + MFA 검토
-#    annotation: alb.ingress.kubernetes.io/inbound-cidrs (사무실/VPN CIDR)
-#
-# 작성할 것: user/overlays/prod/ingress.yaml 참고 + 위 차이점(경로/보안) 반영
-# =====================================================================
-
-# TODO: 여기에 admin Ingress 작성 (경로 /admin, 보안 제한 검토)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: taskfarm-admin
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:000000000000:certificate/replace-me
+    alb.ingress.kubernetes.io/inbound-cidrs: 203.0.113.0/24
+    alb.ingress.kubernetes.io/healthcheck-path: /admin/actuator/health
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/tags: Team=team4,Project=taskfarm,Component=admin
+spec:
+  ingressClassName: alb
+  rules:
+    - host: taskfarm.site
+      http:
+        paths:
+          - path: /admin
+            pathType: Prefix
+            backend:
+              service:
+                name: taskfarm-admin
+                port:
+                  number: 80

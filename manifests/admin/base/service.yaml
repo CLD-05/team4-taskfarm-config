@@ -1,9 +1,14 @@
-# =====================================================================
-# [담당2] admin 앱 - base Service
-# =====================================================================
-# 목표: admin 파드 앞단 ClusterIP. user service와 동일 구조.
-# ⚠️ targetPort = admin 컨테이너 포트 (user와 다름).
-# 작성할 것: user/base/service.yaml 참고 + targetPort만 admin 포트로
-# =====================================================================
-
-# TODO: 여기에 admin Service 작성
+apiVersion: v1
+kind: Service
+metadata:
+  name: taskfarm-admin
+  labels:
+    app.kubernetes.io/name: taskfarm-admin
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: taskfarm-admin
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8081

@@ -1,8 +1,12 @@
-# =====================================================================
-# [담당2] admin base - kustomization
-# =====================================================================
-# 목표: admin base 리소스 묶음. user base kustomization과 동일 구조.
-# 작성할 것: resources에 admin base 4개 yaml
-# =====================================================================
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
 
-# TODO: 여기에 kustomization 작성
+resources:
+  - deployment.yaml
+  - service.yaml
+  - configmap.yaml
+  - externalsecret.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: taskfarm
+  app.kubernetes.io/component: admin
