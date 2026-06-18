@@ -4,7 +4,9 @@ namespace: taskfarm-prod
 resources:
   - ../../base
   - namespace.yaml
-  - ingress.yaml      # prod만 ingress (ALB)
+  - secretstore.yaml
+  - externalsecret.yaml
+  - ingress.yaml
 patches:
   - path: patch-prod.yaml
     target:

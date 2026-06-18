@@ -1,13 +1,14 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-# ⚠️ ingress는 여기 없음 — prod overlay에서만 추가 (dev=port-forward)
+# ⚠️ externalsecret/secretstore는 overlay에 있음 (환경별 시크릿 경로가 달라서)
+# ⚠️ ingress도 prod overlay에만 (dev=port-forward)
 resources:
   - serviceaccount.yaml
-  - secretstore.yaml
-  - externalsecret.yaml
   - configmap.yaml
   - deployment.yaml
   - service.yaml
-commonLabels:
-  app.kubernetes.io/part-of: taskfarm
-  app.kubernetes.io/component: user
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: taskfarm
+      app.kubernetes.io/component: user
+    includeSelectors: false

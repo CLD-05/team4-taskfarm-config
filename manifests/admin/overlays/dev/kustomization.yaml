@@ -4,6 +4,8 @@ namespace: taskfarm-dev
 resources:
   - ../../base
   - namespace.yaml
+  - secretstore.yaml
+  - externalsecret.yaml
 patches:
   - path: patch-dev.yaml
     target:

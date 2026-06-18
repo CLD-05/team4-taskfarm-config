@@ -4,6 +4,8 @@ namespace: taskfarm-dev
 resources:
   - ../../base
   - namespace.yaml
+  - secretstore.yaml
+  - externalsecret.yaml
   # ⚠️ ingress 없음 (dev=port-forward)
 patches:
   - path: patch-dev.yaml
@@ -13,12 +15,11 @@ patches:
 images:
   - name: taskfarm-user-img
     newName: 194722398200.dkr.ecr.ap-northeast-2.amazonaws.com/team4-dev-taskfarm-user
-    newTag: latest   # CI가 git-sha로 갱신 (kustomize edit set image taskfarm-user-img=...:<tag>)
+    newTag: latest
 configMapGenerator:
   - name: taskfarm-user-config
     behavior: merge
     literals:
       - SPRING_PROFILES_ACTIVE=dev,worker
-      # TODO: dev RDS/Redis 엔드포인트 (terraform output)
       - DB_HOST=PLACEHOLDER-dev-rds-endpoint
       - REDIS_HOST=PLACEHOLDER-dev-redis-endpoint
