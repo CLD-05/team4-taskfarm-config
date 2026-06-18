@@ -28,7 +28,7 @@ spec:
                 name: taskfarm-admin-secret
           readinessProbe:
             httpGet:
-              path: /admin/actuator/health
+              path: /admin/actuator/health/readiness
               port: 8081
             initialDelaySeconds: 30
             periodSeconds: 10
@@ -36,7 +36,7 @@ spec:
             failureThreshold: 3
           livenessProbe:
             httpGet:
-              path: /admin/actuator/health
+              path: /admin/actuator/health/liveness
               port: 8081
             initialDelaySeconds: 60
             periodSeconds: 30
