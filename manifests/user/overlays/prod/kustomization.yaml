@@ -48,7 +48,3 @@ configMapGenerator:
       disableNameSuffixHash: true
     literals:
       - SPRING_PROFILES_ACTIVE=prod,worker
-      # 아래: 식별자(코드 결정) + 계정-리전 공통 접미사로 조립. 재배포 후 terraform output로 검증
-      - DB_HOST=team4-prod-mysql.cx482c6a63zp.ap-northeast-2.rds.amazonaws.com
-      - DB_REPLICA_HOST=team4-prod-mysql-reader.cx482c6a63zp.ap-northeast-2.rds.amazonaws.com
-      - REDIS_HOST=team4-prod-redis.50cal1.ng.0001.apn2.cache.amazonaws.com
