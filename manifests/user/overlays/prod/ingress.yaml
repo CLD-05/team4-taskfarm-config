@@ -19,3 +19,27 @@
 # =====================================================================
 
 # TODO: 여기에 Ingress 작성
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: taskfarm-user
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/certificate-arn: <ACM 인증서 ARN>
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+    alb.ingress.kubernetes.io/tags: Team=team4,Environment=prod
+spec:
+  ingressClassName: alb
+  rules:
+    - host: taskfarm.site
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: taskfarm-user
+                port:
+                  number: 80

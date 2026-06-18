@@ -12,3 +12,16 @@
 # =====================================================================
 
 # TODO: 여기에 dev 패치 작성
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskfarm-user
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: taskfarm-user
+          resources:
+            requests: { cpu: 100m, memory: 256Mi }
+            limits:   { memory: 512Mi }

@@ -14,3 +14,14 @@
 # =====================================================================
 
 # TODO: 여기에 Service 작성
+apiVersion: v1
+kind: Service
+metadata:
+  name: taskfarm-user
+spec: 
+  selector:
+    app: taskfarm-user
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: ClusterIP

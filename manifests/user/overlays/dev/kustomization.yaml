@@ -18,3 +18,26 @@
 # =====================================================================
 
 # TODO: 여기에 dev kustomization 작성
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: taskfarm-dev
+
+resources:
+  - ../../base
+
+images:
+  - name: taskfarm-user
+    newName: 194722398200.dkr.ecr.ap-northeast-2.amazonaws.com/team4-dev-taskfarm-user
+    newTag: dev
+
+patches:
+  - path: patch-dev.yaml
+
+configMapGenerator:
+  - name: taskfarm-user-config
+    behavior: merge
+    options:
+      disableNameSuffixHash: true
+    literals:
+      - SPRING_PROFILES_ACTIVE=dev,worker
