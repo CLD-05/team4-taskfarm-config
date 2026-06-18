@@ -1,35 +1,17 @@
-# =====================================================================
-# [담당1] user prod Ingress (ALB) — prod 전용!
-# =====================================================================
-# 목표: 외부 → ALB → user 서비스. ⚠️ dev엔 없음 (port-forward).
-# 전제: AWS Load Balancer Controller 설치됨 (platform-addons, A 담당).
-#
-# 작성할 것:
-#  - kind: Ingress
-#  - metadata.annotations (ALB 설정):
-#     - alb.ingress.kubernetes.io/scheme: internet-facing
-#     - alb.ingress.kubernetes.io/target-type: ip   ← Fargate는 ip 타겟
-#     - listen-ports (HTTP 80 / HTTPS 443)
-#     - certificate-arn (ACM — HTTPS)
-#  - spec.ingressClassName: alb
-#  - spec.rules: host(taskfarm.site), path /, backend → taskfarm-user 서비스
-#
-# 주의: target-type은 ip (Fargate/IP 모드). instance 아님.
-# 참고: https://kubernetes-sigs.github.io/aws-load-balancer-controller/
-# =====================================================================
-
-# TODO: 여기에 Ingress 작성
+# prod 전용 ALB Ingress (dev엔 없음)
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: taskfarm-user
+  labels:
+    app: taskfarm-user
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
-    alb.ingress.kubernetes.io/certificate-arn: <ACM 인증서 ARN>
-    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
-    alb.ingress.kubernetes.io/tags: Team=team4,Environment=prod
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+    # TODO: ACM 인증서 ARN
+    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:...
 spec:
   ingressClassName: alb
   rules:

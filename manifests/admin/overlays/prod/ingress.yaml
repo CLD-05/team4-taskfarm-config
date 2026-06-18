@@ -1,21 +1,21 @@
+# admin prod ingress — /admin 경로. 보안상 내부망/특정 IP 제한 권장.
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: taskfarm-admin
+  labels:
+    app: taskfarm-admin
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
-    alb.ingress.kubernetes.io/ssl-redirect: "443"
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:000000000000:certificate/replace-me
-    alb.ingress.kubernetes.io/inbound-cidrs: 203.0.113.0/24
-    alb.ingress.kubernetes.io/healthcheck-path: /admin/actuator/health
-    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
-    alb.ingress.kubernetes.io/tags: Team=team4,Project=taskfarm,Component=admin
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    # ⚠️ admin은 노출 최소화 — 회사 IP만 허용 권장
+    # alb.ingress.kubernetes.io/inbound-cidrs: <office-ip>/32
+    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:...
 spec:
   ingressClassName: alb
   rules:
-    - host: taskfarm.site
+    - host: admin.taskfarm.site
       http:
         paths:
           - path: /admin

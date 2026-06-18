@@ -3,34 +3,48 @@ kind: Deployment
 metadata:
   name: taskfarm-admin
   labels:
-    app.kubernetes.io/name: taskfarm-admin
+    app: taskfarm-admin
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: taskfarm-admin
+      app: taskfarm-admin
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: taskfarm-admin
+        app: taskfarm-admin
     spec:
+      serviceAccountName: taskfarm-admin-sa
       containers:
         - name: taskfarm-admin
-          image: taskfarm-admin
-          imagePullPolicy: IfNotPresent
+          image: taskfarm-admin-img
           ports:
-            - name: http
-              containerPort: 8081
+            - containerPort: 8081
           envFrom:
             - configMapRef:
                 name: taskfarm-admin-config
-            - secretRef:
-                name: taskfarm-admin-secret
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: taskfarm-admin-secret
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: taskfarm-admin-secret
+                  key: DB_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: taskfarm-admin-secret
+                  key: JWT_SECRET
+          # ⚠️ admin은 context-path /admin → actuator 경로도 /admin 접두사
           readinessProbe:
             httpGet:
               path: /admin/actuator/health/readiness
               port: 8081
-            initialDelaySeconds: 30
+            initialDelaySeconds: 20
             periodSeconds: 10
             timeoutSeconds: 3
             failureThreshold: 3
@@ -38,8 +52,8 @@ spec:
             httpGet:
               path: /admin/actuator/health/liveness
               port: 8081
-            initialDelaySeconds: 60
-            periodSeconds: 30
+            initialDelaySeconds: 30
+            periodSeconds: 20
             timeoutSeconds: 3
             failureThreshold: 3
           resources:

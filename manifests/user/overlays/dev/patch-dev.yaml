@@ -1,27 +1,6 @@
-# =====================================================================
-# [담당1] user dev 패치
-# =====================================================================
-# 목표: dev는 가볍게. replicas 1, 리소스 작게.
-#
-# 작성할 것:
-#  - kind: Deployment, metadata.name: taskfarm-user (base와 같은 이름 — 패치 대상)
-#  - spec.replicas: 1
-#  - containers[].resources: 작게 (requests cpu 100m/mem 256Mi 등)
-#
-# 힌트: 전체 다 쓸 필요 없음. 바꿀 필드만 (strategic merge patch)
-# =====================================================================
-
-# TODO: 여기에 dev 패치 작성
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: taskfarm-user
 spec:
   replicas: 1
-  template:
-    spec:
-      containers:
-        - name: taskfarm-user
-          resources:
-            requests: { cpu: 100m, memory: 256Mi }
-            limits:   { memory: 512Mi }

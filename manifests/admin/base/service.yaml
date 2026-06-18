@@ -3,12 +3,12 @@ kind: Service
 metadata:
   name: taskfarm-admin
   labels:
-    app.kubernetes.io/name: taskfarm-admin
+    app: taskfarm-admin
 spec:
   type: ClusterIP
   selector:
-    app.kubernetes.io/name: taskfarm-admin
+    app: taskfarm-admin
   ports:
-    - name: http
-      port: 80
+    - port: 80
       targetPort: 8081
+      protocol: TCP

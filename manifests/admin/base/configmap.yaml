@@ -5,5 +5,8 @@ metadata:
 data:
   DB_PORT: "3306"
   DB_NAME: "taskfarm"
+  REDIS_PORT: "6379"
+  REDIS_SSL_ENABLED: "false"
   JPA_DDL_AUTO: "validate"
-  JWT_EXPIRATION: "86400000"
+  AWS_REGION: "ap-northeast-2"
+  SERVER_SERVLET_CONTEXT_PATH: "/admin"

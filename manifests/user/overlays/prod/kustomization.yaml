@@ -1,50 +1,24 @@
-# =====================================================================
-# [담당1] user overlay prod
-# =====================================================================
-# 목표: base + 고가용성 + ALB ingress.
-#
-# 작성할 것:
-#  - resources: [../../base, ingress.yaml]   ← prod는 ingress 추가!
-#  - images: ECR + newTag: prod
-#  - patches: patch-prod.yaml
-#  - configMapGenerator(merge): prod 환경변수
-#     예) SPRING_PROFILES_ACTIVE, DB_HOST(prod), DB_REPLICA_HOST(읽기분리), REDIS_HOST
-#
-# 주의:
-#  - ⚠️ dev와 달리 ingress.yaml을 resources에 포함
-#  - DB_REPLICA_HOST는 prod만 (읽기 전용 엔드포인트 — 읽기 부하 분리)
-# =====================================================================
-
-# TODO: 여기에 prod kustomization 작성
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 namespace: taskfarm-prod
-
 resources:
   - ../../base
-  - ingress.yaml
-
-images:
-  - name: taskfarm-user
-    newName: 194722398200.dkr.ecr.ap-northeast-2.amazonaws.com/team4-prod-taskfarm-user
-    newTag: prod
-
+  - namespace.yaml
+  - ingress.yaml      # prod만 ingress (ALB)
 patches:
   - path: patch-prod.yaml
-  # base ExternalSecret은 dev 경로 → prod는 gemini 시크릿 경로를 prod로 교체
-  - target:
-      kind: ExternalSecret
-      name: taskfarm-user-secret
-    patch: |
-      - op: replace
-        path: /spec/data/0/remoteRef/key
-        value: team4/taskfarm/prod/gemini-api-key
-
+    target:
+      kind: Deployment
+      name: taskfarm-user
+images:
+  - name: taskfarm-user-img
+    newName: 194722398200.dkr.ecr.ap-northeast-2.amazonaws.com/team4-prod-taskfarm-user
+    newTag: latest
 configMapGenerator:
   - name: taskfarm-user-config
     behavior: merge
-    options:
-      disableNameSuffixHash: true
     literals:
       - SPRING_PROFILES_ACTIVE=prod,worker
+      - DB_HOST=PLACEHOLDER-prod-rds-endpoint
+      - DB_REPLICA_HOST=PLACEHOLDER-prod-rds-reader-endpoint
+      - REDIS_HOST=PLACEHOLDER-prod-redis-endpoint
