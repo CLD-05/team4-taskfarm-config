@@ -26,3 +26,25 @@
 # =====================================================================
 
 # TODO: 여기에 root Application 작성
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: taskfarm-root
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/CLD-05/team4-taskfarm-config.git
+    targetRevision: main
+    path: apps
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
