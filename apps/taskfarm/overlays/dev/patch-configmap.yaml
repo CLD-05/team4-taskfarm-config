@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: taskfarm-config
+data:
+  SPRING_PROFILES_ACTIVE: dev
+  DB_NAME: "taskfarm_dev"

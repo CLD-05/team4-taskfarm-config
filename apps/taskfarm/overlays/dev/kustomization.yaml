@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: taskfarm-dev
+
+resources:
+  - ../../base
+  - namespace.yaml
+  - externalsecret.yaml
+  - secretstore.yaml
+
+patchesStrategicMerge:
+  - patch-deployment.yaml
+  - patch-configmap.yaml
+
+images:
+  - name: taskfarm-app-img
+    newName: 000000000000.dkr.ecr.ap-northeast-2.amazonaws.com/team4-dev-taskfarm
+    newTag: latest
