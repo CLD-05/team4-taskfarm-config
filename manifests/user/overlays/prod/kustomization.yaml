@@ -16,3 +16,39 @@
 # =====================================================================
 
 # TODO: 여기에 prod kustomization 작성
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: taskfarm-prod
+
+resources:
+  - ../../base
+  - ingress.yaml
+
+images:
+  - name: taskfarm-user
+    newName: 194722398200.dkr.ecr.ap-northeast-2.amazonaws.com/team4-prod-taskfarm-user
+    newTag: prod
+
+patches:
+  - path: patch-prod.yaml
+  # base ExternalSecret은 dev 경로 → prod는 gemini 시크릿 경로를 prod로 교체
+  - target:
+      kind: ExternalSecret
+      name: taskfarm-user-secret
+    patch: |
+      - op: replace
+        path: /spec/data/0/remoteRef/key
+        value: team4/taskfarm/prod/gemini-api-key
+
+configMapGenerator:
+  - name: taskfarm-user-config
+    behavior: merge
+    options:
+      disableNameSuffixHash: true
+    literals:
+      - SPRING_PROFILES_ACTIVE=prod,worker
+      # 아래: 식별자(코드 결정) + 계정-리전 공통 접미사로 조립. 재배포 후 terraform output로 검증
+      - DB_HOST=team4-prod-mysql.cx482c6a63zp.ap-northeast-2.rds.amazonaws.com
+      - DB_REPLICA_HOST=team4-prod-mysql-reader.cx482c6a63zp.ap-northeast-2.rds.amazonaws.com
+      - REDIS_HOST=team4-prod-redis.50cal1.ng.0001.apn2.cache.amazonaws.com

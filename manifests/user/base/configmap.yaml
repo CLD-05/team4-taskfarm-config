@@ -17,3 +17,13 @@
 # =====================================================================
 
 # TODO: 여기에 ConfigMap 작성 (공통 값만)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: taskfarm-user-config
+data:
+  DB_PORT: "3306"
+  DB_NAME: "taskfarm"
+  REDIS_PORT: "6379"
+  REDIS_USERNAME: "default"
+  JPA_DDL_AUTO: "validate"

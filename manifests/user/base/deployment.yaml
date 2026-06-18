@@ -24,3 +24,42 @@
 # =====================================================================
 
 # TODO: 여기에 Deployment 작성
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskfarm-user
+  labels:
+    app: taskfarm-user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: taskfarm-user
+  template:
+    metadata:
+      labels:
+        app: taskfarm-user
+    spec:
+      securityContext:
+        runAsNonRoot: true
+      containers:
+        - name: taskfarm-user
+          image: taskfarm-user:latest
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: taskfarm-user-secret
+            - configMapRef:
+                name: taskfarm-user-config
+          livenessProbe:
+            httpGet: { path: /actuator/health/liveness, port: 8080 }
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          readinessProbe:
+            httpGet: { path: /actuator/health/readiness, port: 8080 }
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          resources:
+            requests: { cpu: 250m, memory: 512Mi }
+            limits:   { memory: 1Gi }
