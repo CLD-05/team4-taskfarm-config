@@ -1,6 +1,17 @@
-# =====================================================================
-# [담당2] admin dev 패치 — 가볍게 (replicas 1, 리소스 작게)
-# 작성할 것: user/overlays/dev/patch-dev.yaml 참고, name=taskfarm-admin
-# =====================================================================
-
-# TODO: 여기에 admin dev 패치 작성
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskfarm-admin
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: taskfarm-admin
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi

@@ -1,9 +1,28 @@
-# =====================================================================
-# [담당2] admin overlay prod
-# =====================================================================
-# 목표: base + 고가용성 + ingress. user prod overlay와 동일 구조.
-# ⚠️ resources에 ingress.yaml 포함. images는 admin ECR + prod 태그.
-# 작성할 것: user/overlays/prod/kustomization.yaml 참고
-# =====================================================================
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
 
-# TODO: 여기에 admin prod kustomization 작성
+resources:
+  - ../../base
+  - ingress.yaml
+
+images:
+  - name: taskfarm-admin
+    newName: 000000000000.dkr.ecr.ap-northeast-2.amazonaws.com/team4-prod-taskfarm-admin
+    newTag: prod
+
+patches:
+  - path: patch-prod.yaml
+
+configMapGenerator:
+  - name: taskfarm-admin-config
+    behavior: merge
+    literals:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DB_HOST=team4-prod-rds.endpoint.replace-me
+      - DB_REPLICA_HOST=team4-prod-rds-replica.endpoint.replace-me
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+commonLabels:
+  app.kubernetes.io/environment: prod
