@@ -24,6 +24,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: taskfarm-user-config
+            - configMapRef:
+                name: taskfarm-endpoints
           env:
             - name: DB_USERNAME
               valueFrom:
