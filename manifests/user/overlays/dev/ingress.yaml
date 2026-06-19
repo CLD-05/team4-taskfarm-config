@@ -1,0 +1,28 @@
+# dev 전용 ALB Ingress (HTTP만, 도메인/ACM 없이 ALB 기본주소로 접속)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: taskfarm-user
+  labels:
+    app: taskfarm-user
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip            # Fargate는 ip 필수
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/success-codes: '200'
+    # dev는 user/admin ALB를 하나로 묶기 위해 group 사용 (선택)
+    alb.ingress.kubernetes.io/group.name: taskfarm-dev
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: taskfarm-user
+                port:
+                  number: 80

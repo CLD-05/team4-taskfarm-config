@@ -1,0 +1,28 @@
+# dev 전용 admin ALB Ingress (/admin 경로, user와 같은 ALB group 공유)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: taskfarm-admin
+  labels:
+    app: taskfarm-admin
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /admin/actuator/health
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/success-codes: '200'
+    # user와 같은 group → ALB 1개를 공유 (비용 절감)
+    alb.ingress.kubernetes.io/group.name: taskfarm-dev
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /admin
+            pathType: Prefix
+            backend:
+              service:
+                name: taskfarm-admin
+                port:
+                  number: 80
