@@ -6,6 +6,7 @@ resources:
 - namespace.yaml
 - secretstore.yaml
 - externalsecret.yaml
+- ingress.yaml
 patches:
 - path: patch-dev.yaml
   target:

@@ -6,6 +6,7 @@ resources:
 - namespace.yaml
 - secretstore.yaml
 - externalsecret.yaml
+- ingress.yaml
   # ⚠️ ingress 없음 (dev=port-forward)
 patches:
 - path: patch-dev.yaml
