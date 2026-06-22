@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: taskfarm-admin-prod
+  name: taskfarm-monitoring-prod
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/CLD-05/team4-taskfarm-config.git
     targetRevision: main
-    path: manifests/admin/overlays/prod
+    path: manifests/monitoring/overlays/prod
   destination:
     server: https://kubernetes.default.svc
-    namespace: taskfarm-prod
+    namespace: monitoring
   syncPolicy:
     syncOptions:
-      - CreateNamespace=false
+      - CreateNamespace=true

@@ -15,4 +15,4 @@ spec:
   syncPolicy:
     # prod는 automated 끔 — 수동 sync (안전)
     syncOptions:
-      - CreateNamespace=true
+      - CreateNamespace=false
