@@ -10,7 +10,7 @@ spec:
     matchLabels:
       app: taskfarm-admin
   namespaceSelector:
-    matchNames: ["taskfarm-dev", "taskfarm"]
+    matchNames: ["taskfarm-dev", "taskfarm", "taskfarm-prod"]
   endpoints:
     - port: http
       path: /admin/actuator/prometheus
