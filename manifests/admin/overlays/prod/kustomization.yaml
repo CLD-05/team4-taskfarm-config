@@ -20,5 +20,3 @@ configMapGenerator:
     behavior: merge
     literals:
       - SPRING_PROFILES_ACTIVE=prod
-      - DB_HOST=PLACEHOLDER-prod-rds-endpoint
-      - REDIS_HOST=PLACEHOLDER-prod-redis-endpoint

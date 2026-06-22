@@ -14,4 +14,4 @@ spec:
     namespace: taskfarm-prod
   syncPolicy:
     syncOptions:
-      - CreateNamespace=true
+      - CreateNamespace=false
