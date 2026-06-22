@@ -15,7 +15,7 @@ patches:
 images:
 - name: taskfarm-user-img
   newName: 194722398200.dkr.ecr.ap-northeast-2.amazonaws.com/team4-dev-taskfarm-user
-  newTag: dev-fb75d78
+  newTag: dev-0e3629d
 configMapGenerator:
 - behavior: merge
   literals:
