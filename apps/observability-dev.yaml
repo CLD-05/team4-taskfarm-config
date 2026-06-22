@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: taskfarm-observability-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/CLD-05/team4-taskfarm-config.git
+    targetRevision: main
+    path: manifests/observability/fargate-logging/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: aws-observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
