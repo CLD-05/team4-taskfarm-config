@@ -1,0 +1,17 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: taskfarm-user-queue
+spec:
+  scaleTargetRef:
+    name: taskfarm-user
+  minReplicaCount: 1
+  maxReplicaCount: 5
+  pollingInterval: 30
+  cooldownPeriod: 300
+  triggers:
+    - type: redis
+      metadata:
+        address: "PLACEHOLDER-prod-redis-endpoint:6379" # configmap의 REDIS_HOST 참고 바꿔야 함!
+        listName: "ai:recommend:queue" # 백엔드에 "AI 큐 key 이름" 물어보기
+        listLength: "10" # 큐가 10개 쌓이면 스케일아웃
