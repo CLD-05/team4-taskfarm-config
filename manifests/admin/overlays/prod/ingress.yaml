@@ -11,7 +11,7 @@ metadata:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     # admin은 노출 최소화 — 관리자 ip만 허용 권장
     # alb.ingress.kubernetes.io/inbound-cidrs: <office-ip>/32
-    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:...
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:194722398200:certificate/7088d446-8124-4476-9b87-e88b978a3924
 spec:
   ingressClassName: alb
   rules:
