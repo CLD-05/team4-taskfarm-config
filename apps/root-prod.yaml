@@ -1,9 +1,7 @@
-# App-of-Apps: 이 root가 apps/ 하위 Application들을 관리.
-# ArgoCD에 이 root만 등록하면 user/admin × dev/prod가 줄줄이 생성됨.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: taskfarm-root
+  name: taskfarm-root-prod
   namespace: argocd
 spec:
   project: default
@@ -13,7 +11,7 @@ spec:
     path: apps
     directory:
       recurse: false
-      include: "{user-dev.yaml,admin-dev.yaml,user-prod.yaml,admin-prod.yaml,monitoring-prod.yaml}"
+      include: '{user-prod.yaml,admin-prod.yaml,monitoring-prod.yaml}'   # prod + monitoring
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

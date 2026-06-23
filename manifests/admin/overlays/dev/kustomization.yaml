@@ -2,21 +2,21 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: taskfarm-dev
 resources:
-- ../../base
-- secretstore.yaml
-- externalsecret.yaml
-- ingress.yaml
+  - ../../base
+  # secretstore.yaml 제거 — ClusterSecretStore 사용
+  - externalsecret.yaml
+  - ingress.yaml
 patches:
-- path: patch-dev.yaml
-  target:
-    kind: Deployment
-    name: taskfarm-admin
+  - path: patch-dev.yaml
+    target:
+      kind: Deployment
+      name: taskfarm-admin
 images:
-- name: taskfarm-admin-img
-  newName: 194722398200.dkr.ecr.ap-northeast-2.amazonaws.com/team4-dev-taskfarm-admin
-  newTag: dev-65377d5
+  - name: taskfarm-admin-img
+    newName: 194722398200.dkr.ecr.ap-northeast-2.amazonaws.com/team4-dev-taskfarm-admin
+    newTag: dev-0e3629d
 configMapGenerator:
-- behavior: merge
-  literals:
-  - SPRING_PROFILES_ACTIVE=dev
-  name: taskfarm-admin-config
+  - name: taskfarm-admin-config
+    behavior: merge
+    literals:
+      - SPRING_PROFILES_ACTIVE=dev

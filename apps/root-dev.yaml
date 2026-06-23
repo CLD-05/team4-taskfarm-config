@@ -1,17 +1,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: taskfarm-monitoring-prod
+  name: taskfarm-root-dev
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/CLD-05/team4-taskfarm-config.git
     targetRevision: main
-    path: manifests/monitoring
+    path: apps
+    directory:
+      recurse: false
+      include: '{user-dev.yaml,admin-dev.yaml}'   # dev만!
   destination:
     server: https://kubernetes.default.svc
-    namespace: monitoring
+    namespace: argocd
   syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true

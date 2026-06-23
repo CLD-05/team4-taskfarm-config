@@ -2,22 +2,21 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: taskfarm-dev
 resources:
-- ../../base
-- secretstore.yaml
-- externalsecret.yaml
-- ingress.yaml
-  # ⚠️ ingress 없음 (dev=port-forward)
+  - ../../base
+  # secretstore.yaml 제거 — ClusterSecretStore(monitoring에서 단일 생성) 사용
+  - externalsecret.yaml
+  - ingress.yaml # dev도 앱 ALB 띄우기로 팀 합의 (의도된 구성)
 patches:
-- path: patch-dev.yaml
-  target:
-    kind: Deployment
-    name: taskfarm-user
+  - path: patch-dev.yaml
+    target:
+      kind: Deployment
+      name: taskfarm-user
 images:
-- name: taskfarm-user-img
-  newName: 194722398200.dkr.ecr.ap-northeast-2.amazonaws.com/team4-dev-taskfarm-user
-  newTag: dev-65377d5
+  - name: taskfarm-user-img
+    newName: 194722398200.dkr.ecr.ap-northeast-2.amazonaws.com/team4-dev-taskfarm-user
+    newTag: dev-0e3629d
 configMapGenerator:
-- behavior: merge
-  literals:
-  - SPRING_PROFILES_ACTIVE=dev,worker
-  name: taskfarm-user-config
+  - name: taskfarm-user-config
+    behavior: merge
+    literals:
+      - SPRING_PROFILES_ACTIVE=dev,worker
