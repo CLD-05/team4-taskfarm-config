@@ -7,18 +7,51 @@ metadata:
     release: kube-prometheus-stack
 spec:
   groups:
-    - name: taskfarm.sli
+    - name: taskfarm.sli.alerts
       rules:
-        - alert: HighErrorRate5xx
+        - alert: TaskFarmHigh5xxErrorRate
           expr: |
             (
-              sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m]))
+              sum(rate(http_server_requests_seconds_count{namespace=~"taskfarm|taskfarm-prod|taskfarm-dev", status=~"5.."}[5m]))
               /
-              sum(rate(http_server_requests_seconds_count[5m]))
+              sum(rate(http_server_requests_seconds_count{namespace=~"taskfarm|taskfarm-prod|taskfarm-dev"}[5m]))
             ) > 0.05
           for: 5m
           labels:
             severity: warning
           annotations:
-            summary: "5xx 에러율 5% 초과"
-            description: "최근 5분 동안 5xx 응답 비율이 5%를 초과했습니다."
+            summary: "TaskFarm 5xx error rate is high"
+            description: "5xx response rate exceeded 5% for 5 minutes."
+
+        - alert: TaskFarmHighLatencyP95
+          expr: |
+            histogram_quantile(
+              0.95,
+              sum(rate(http_server_requests_seconds_bucket{namespace=~"taskfarm|taskfarm-prod|taskfarm-dev"}[5m])) by (le)
+            ) > 0.5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "TaskFarm p95 latency is high"
+            description: "p95 latency exceeded 500ms for 5 minutes."
+
+        - alert: TaskFarmServiceDown
+          expr: |
+            up{namespace=~"taskfarm|taskfarm-prod|taskfarm-dev", job=~".*taskfarm.*"} == 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "TaskFarm service is down"
+            description: "Prometheus cannot scrape TaskFarm service metrics."
+
+        - alert: TaskFarmPodRestarting
+          expr: |
+            increase(kube_pod_container_status_restarts_total{namespace=~"taskfarm|taskfarm-prod|taskfarm-dev", pod=~"taskfarm-(user|admin).*"}[10m]) > 0
+          for: 0m
+          labels:
+            severity: warning
+          annotations:
+            summary: "TaskFarm pod restarted"
+            description: "A TaskFarm pod restarted within the last 10 minutes."

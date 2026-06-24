@@ -2,4 +2,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - clustersecretstore.yaml
+  - externalsecret-alertmanager-slack.yaml
   - externalsecret-grafana.yaml
+  - servicemonitor-admin.yaml
+  - servicemonitor-user.yaml
+  - overlays/prod
