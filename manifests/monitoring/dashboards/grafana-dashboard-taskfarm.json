@@ -303,7 +303,7 @@
           "refId": "A"
         }
       ],
-      "title": "Panel Title",
+      "title": "Request Rate",
       "type": "timeseries"
     },
     {
@@ -353,7 +353,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -414,6 +415,6 @@
   "timezone": "browser",
   "title": "TaskFarm Monitoring",
   "uid": "afq2hbiw1p0jkb",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
