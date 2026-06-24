@@ -3,3 +3,5 @@ kind: Kustomization
 resources:
   - clustersecretstore.yaml
   - externalsecret-grafana.yaml
+  - servicemonitor-user.yaml
+  - servicemonitor-admin.yaml
