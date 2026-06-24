@@ -3,7 +3,6 @@ kind: Kustomization
 namespace: taskfarm-prod
 resources:
 - ../../base
-- secretstore.yaml
 - externalsecret.yaml
 - ingress.yaml
 patches:
