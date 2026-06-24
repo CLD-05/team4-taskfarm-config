@@ -11,7 +11,7 @@ spec:
       app: taskfarm-user
 
   namespaceSelector:
-    matchNames: ["taskfarm-dev", "taskfarm", "taskfarm-prod"]
+    matchNames: ["taskfarm-dev", "taskfarm-prod"]
   endpoints:
     - port: http
       path: /actuator/prometheus
