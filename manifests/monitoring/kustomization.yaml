@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - clustersecretstore.yaml
+  - externalsecret-alertmanager-slack.yaml
   - externalsecret-grafana.yaml
   - servicemonitor-user.yaml
   - servicemonitor-admin.yaml
