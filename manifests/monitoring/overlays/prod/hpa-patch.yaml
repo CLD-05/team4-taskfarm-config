@@ -1,0 +1,9 @@
+- op: add
+  path: /metadata/namespace
+  value: taskfarm-prod
+- op: replace
+  path: /spec/minReplicas
+  value: 1
+- op: replace
+  path: /spec/maxReplicas
+  value: 5
