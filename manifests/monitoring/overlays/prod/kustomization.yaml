@@ -7,10 +7,10 @@ resources:
   - ingress-grafana.yaml
   - ingress-argocd.yaml
 
-patches:
-  - path: hpa-patch.yaml
-    target:
-      group: autoscaling
-      version: v2
-      kind: HorizontalPodAutoscaler
-      name: taskfarm-user
+# patches:
+#   - path: hpa-patch.yaml
+#     target:
+#       group: autoscaling
+#       version: v2
+#       kind: HorizontalPodAutoscaler
+#       name: taskfarm-user
