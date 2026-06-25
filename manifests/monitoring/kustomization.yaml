@@ -7,3 +7,14 @@ resources:
   - servicemonitor-user.yaml
   - servicemonitor-admin.yaml
   - overlays/prod
+
+configMapGenerator:
+  - name: taskfarm-grafana-dashboards
+    files:
+      - dashboards/grafana-dashboard-taskfarm.json
+      - dashboards/grafana-dashboard-jvm-micrometer.json
+      - dashboards/grafana-dashboard-springboot-apm.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      disableNameSuffixHash: true
