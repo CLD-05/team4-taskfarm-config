@@ -1,20 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: taskfarm-root-prod
+  name: taskfarm-common
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/CLD-05/team4-taskfarm-config.git
     targetRevision: main
-    path: apps
-    directory:
-      recurse: false
-      include: '{user-prod.yaml,admin-prod.yaml,common.yaml,monitoring-prod.yaml}'   # prod + monitoring
+    path: manifests/common
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: external-secrets
   syncPolicy:
     automated:
       prune: true
