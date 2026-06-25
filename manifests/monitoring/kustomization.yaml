@@ -14,6 +14,7 @@ configMapGenerator:
       - dashboards/grafana-dashboard-taskfarm.json
       - dashboards/grafana-dashboard-jvm-micrometer.json
       - dashboards/grafana-dashboard-springboot-apm.json
+      - dashboards/grafana-dashboard-falco.json
     options:
       labels:
         grafana_dashboard: "1"
