@@ -6,8 +6,10 @@ namespace: taskfarm-dev
 resources:
   - ../../base
 
-# patches:
-#   - path: hpa-patch.yaml
-#     target:
-#       kind: HorizontalPodAutoscaler
-#       name: taskfarm-user
+patches:
+  - path: keda-redis-address-patch.yaml
+    target:
+      group: keda.sh
+      version: v1alpha1
+      kind: ScaledObject
+      name: taskfarm-user-autoscaler

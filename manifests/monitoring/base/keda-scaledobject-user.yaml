@@ -1,0 +1,49 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: taskfarm-user-autoscaler
+spec:
+  scaleTargetRef:
+    name: taskfarm-user
+
+  minReplicaCount: 1
+  maxReplicaCount: 3
+
+  pollingInterval: 30
+  cooldownPeriod: 300
+
+  advanced:
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleUp:
+          # 부하 증가 시 빠르게 반응
+          stabilizationWindowSeconds: 60
+          policies:
+            - type: Pods
+              value: 1
+              periodSeconds: 60
+          selectPolicy: Max
+
+        scaleDown:
+          # 부하가 줄어도 바로 줄이지 않고 5분 동안 안정화
+          stabilizationWindowSeconds: 300
+          policies:
+            - type: Pods
+              value: 1
+              periodSeconds: 60
+          selectPolicy: Min
+
+  triggers:
+    # Redis 큐 기반 스케일링
+    - type: redis
+      metadata:
+        address: "REPLACE_ME:6379"
+        listName: "ai:recommend:queue"
+        listLength: "10"
+        enableTLS: "false"
+
+    # CPU 기반 스케일링, 기존 HPA 대체
+    - type: cpu
+      metricType: Utilization
+      metadata:
+        value: "70"
