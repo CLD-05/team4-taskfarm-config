@@ -1,16 +1,18 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: taskfarm-prod
+
 resources:
   - ../../base
   - prometheusrule-taskfarm.yaml
   - ingress-grafana.yaml
   - ingress-argocd.yaml
 
-# patches:
-#   - path: hpa-patch.yaml
-#     target:
-#       group: autoscaling
-#       version: v2
-#       kind: HorizontalPodAutoscaler
-#       name: taskfarm-user
+patches:
+  - path: keda-redis-address-patch.yaml
+    target:
+      group: keda.sh
+      version: v1alpha1
+      kind: ScaledObject
+      name: taskfarm-user-autoscaler

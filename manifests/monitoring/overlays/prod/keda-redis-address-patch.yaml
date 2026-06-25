@@ -1,0 +1,26 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: taskfarm-user-autoscaler
+spec:
+  scaleTargetRef:
+    name: taskfarm-user
+
+  minReplicaCount: 1
+  maxReplicaCount: 5
+
+  pollingInterval: 30
+  cooldownPeriod: 300
+
+  triggers:
+    - type: redis
+      metadata:
+        address: "team4-prod-redis.50cal1.ng.0001.apn2.cache.amazonaws.com:6379"
+        listName: "ai:recommend:queue"
+        listLength: "10"
+        enableTLS: "false"
+
+    - type: cpu
+      metricType: Utilization
+      metadata:
+        value: "70"
