@@ -22,7 +22,7 @@ INGRESS_FILE="$CONFIG_REPO/manifests/admin/overlays/prod/ingress.yaml"
 TFVARS_FILE="$INFRA_REPO/infra/envs/prod/infra/terraform.tfvars"
 
 if ! command -v jq >/dev/null 2>&1; then
-  echo "이 문구를 실행하여 jq를 설치하세요. curl -L -o /usr/bin/jq.exe https://github.com/jqlang/jq/releases/latest/download/jq-windows-amd64.exe" >&2
+  echo "이 문구를 실행하여 jq를 설치하세요. winget install jqlang.jq" >&2
   exit 1
 fi
 
