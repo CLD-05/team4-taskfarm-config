@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[pre-commit] Team4 local security checks start"
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
+
+if [ -z "$STAGED_FILES" ]; then
+  echo "[pre-commit] No staged files. skip."
+  exit 0
+fi
+
+echo "[pre-commit] Checking forbidden files..."
+
+FORBIDDEN_PATTERN='(^|/)(terraform\.tfvars|.*\.tfvars|.*\.tfvars\.json|.*\.tfstate|.*\.tfstate\.backup|.*\.pem|.*\.key|.*\.p12|.*\.jks|.*\.keystore|.*\.env)$'
+
+if echo "$STAGED_FILES" | grep -E "$FORBIDDEN_PATTERN" >/dev/null; then
+  echo ""
+  echo "[pre-commit] ERROR: forbidden file detected."
+  echo "$STAGED_FILES" | grep -E "$FORBIDDEN_PATTERN"
+  echo ""
+  echo "Do not commit tfvars, tfstate, env, pem, key, keystore files."
+  exit 1
+fi
+
+echo "[pre-commit] Checking secret-like values..."
+
+SECRET_PATTERN='(AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z_-]{35}|-----BEGIN (RSA |EC |OPENSSH |)PRIVATE KEY-----|password[[:space:]]*[:=][[:space:]]*[^[:space:]]+|secret[[:space:]]*[:=][[:space:]]*[^[:space:]]+|token[[:space:]]*[:=][[:space:]]*[^[:space:]]+)'
+
+FAILED=0
+
+while IFS= read -r file; do
+  if [ ! -f "$file" ]; then
+    continue
+  fi
+
+  case "$file" in
+    *.png|*.jpg|*.jpeg|*.gif|*.webp|*.ico|*.zip|*.jar|*.war|*.class|*.pdf)
+      continue
+      ;;
+  esac
+
+  if git show ":$file" | grep -E -i "$SECRET_PATTERN" >/dev/null; then
+    echo ""
+    echo "[pre-commit] ERROR: possible secret detected in $file"
+    echo "Remove the secret or move it to GitHub Secrets / AWS Secrets Manager / ExternalSecret."
+    FAILED=1
+  fi
+done <<< "$STAGED_FILES"
+
+if [ "$FAILED" -ne 0 ]; then
+  exit 1
+fi
+
+if command -v gitleaks >/dev/null 2>&1; then
+  echo "[pre-commit] Running gitleaks protect..."
+  gitleaks protect --staged --verbose
+else
+  echo "[pre-commit] gitleaks not installed. skip local gitleaks scan."
+  echo "[pre-commit] GitHub Actions gitleaks will still run after push."
+fi
+
+echo "[pre-commit] All checks passed"
+exit 0
