@@ -3,6 +3,24 @@ set -euo pipefail
 
 AWS_REGION="ap-northeast-2"
 
+validate_ipv4() {
+  local ip="$1"
+  local IFS='.'
+  local -a octets
+
+  [[ "$ip" =~ ^[0-9]+(\.[0-9]+){3}$ ]] || return 1
+
+  read -ra octets <<< "$ip"
+
+  for octet in "${octets[@]}"; do
+    if (( octet < 0 || octet > 255 )); then
+      return 1
+    fi
+  done
+
+  return 0
+}
+
 CONFIG_REPO="$(cd "$(dirname "$0")/.." && pwd)"
 ROOT_DIR="$(cd "$CONFIG_REPO/.." && pwd)"
 INFRA_REPO="$ROOT_DIR/team4-taskfarm-infra"
@@ -48,8 +66,8 @@ fi
 MY_IP="$(curl -s ifconfig.me)"
 echo "감지된 현재 IP: $MY_IP"
 
-if ! [[ "$MY_IP" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-  echo "IP 감지 실패: $MY_IP" >&2
+if ! validate_ipv4 "$MY_IP"; then
+  echo "IP 형식이 올바르지 않습니다: $MY_IP" >&2
   exit 1
 fi
 
@@ -66,13 +84,25 @@ if jq -e 'to_entries[] | select(.value == "" or .value == null or .value == "0.0
   exit 1
 fi
 
+while read -r member ip; do
+  if ! validate_ipv4 "$ip"; then
+    echo "members-ip.json에 잘못된 IP 형식이 있습니다: $member=$ip" >&2
+    exit 1
+  fi
+done < <(jq -r 'to_entries[] | "\(.key) \(.value)"' "$MEMBERS_FILE")
+
 CIDRS_CSV="$(jq -r '[.[] + "/32"] | join(",")' "$MEMBERS_FILE")"
-CIDRS_TFVARS="$(jq -r '[.[] + "/32"] | map("\"" + . + "\"") | join(", ")' "$MEMBERS_FILE")"
+CIDRS_TFVARS_BLOCK="$(jq -r '[.[] + "/32"] | map("  \"" + . + "\",") | join("\n")' "$MEMBERS_FILE")"
 
 echo "생성된 CIDR 목록:"
 echo "$CIDRS_CSV"
 
 echo "admin ingress inbound-cidrs 갱신 중..."
+
+if ! grep -q "alb.ingress.kubernetes.io/certificate-arn" "$INGRESS_FILE"; then
+  echo "ingress.yaml에서 certificate-arn 항목을 찾을 수 없습니다. HTTPS 설정을 확인하세요." >&2
+  exit 1
+fi
 
 if ! grep -q "alb.ingress.kubernetes.io/inbound-cidrs" "$INGRESS_FILE"; then
   echo "ingress.yaml에서 inbound-cidrs 항목을 찾을 수 없습니다." >&2
@@ -93,10 +123,28 @@ sed -i.bak -E "s#public_access_cidrs = \[.*\]#public_access_cidrs = [$CIDRS_TFVA
 rm -f "$TFVARS_FILE.bak"
 
 echo
-echo "변경 확인:"
+echo "갱신 완료."
+echo
+
 echo "===== config repo diff ====="
 cd "$CONFIG_REPO"
 git diff -- manifests/admin/overlays/prod/ingress.yaml
+
+echo
+read -p "ingress.yaml 변경사항을 commit/push 할까요? (y/N): " PUSH_CONFIRM
+
+if [[ "$PUSH_CONFIRM" =~ ^[Yy]$ ]]; then
+  git add manifests/admin/overlays/prod/ingress.yaml
+
+  if git diff --cached --quiet; then
+    echo "커밋할 변경사항이 없습니다."
+  else
+    git commit -m "chore: update admin access cidrs"
+    git push
+  fi
+else
+  echo "config repo commit/push를 건너뜁니다."
+fi
 
 echo
 echo "===== infra repo diff ====="
@@ -104,4 +152,20 @@ cd "$INFRA_REPO"
 git diff -- infra/envs/prod/infra/terraform.tfvars
 
 echo
-echo "갱신 완료."
+read -p "EKS public_access_cidrs 변경을 terraform apply 할까요? (y/N): " APPLY_CONFIRM
+
+if [[ "$APPLY_CONFIRM" =~ ^[Yy]$ ]]; then
+  cd "$INFRA_REPO/infra/envs/prod/infra"
+  terraform plan -target=module.eks.aws_eks_cluster.main
+
+  echo
+  read -p "위 plan 확인 후 apply를 진행할까요? (y/N): " FINAL_APPLY_CONFIRM
+
+  if [[ "$FINAL_APPLY_CONFIRM" =~ ^[Yy]$ ]]; then
+    terraform apply -target=module.eks.aws_eks_cluster.main
+  else
+    echo "terraform apply를 취소했습니다."
+  fi
+else
+  echo "terraform apply를 건너뜁니다."
+fi
