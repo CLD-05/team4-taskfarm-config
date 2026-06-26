@@ -96,8 +96,8 @@ if ! grep -q "alb.ingress.kubernetes.io/certificate-arn" "$INGRESS_FILE"; then
   exit 1
 fi
 
-if ! grep -q "alb.ingress.kubernetes.io/inbound-cidrs" "$INGRESS_FILE"; then
-  echo "ingress.yaml에서 inbound-cidrs 항목을 찾을 수 없습니다." >&2
+if ! grep -q "^[[:space:]]*alb.ingress.kubernetes.io/inbound-cidrs:" "$INGRESS_FILE"; then
+  echo "ingress.yaml에서 활성 inbound-cidrs 항목을 찾을 수 없습니다." >&2
   exit 1
 fi
 
@@ -118,14 +118,14 @@ echo
 echo "갱신 완료."
 echo
 
-echo "===== config repo diff ====="
-cd "$CONFIG_REPO"
-git diff -- manifests/admin/overlays/prod/ingress.yaml
+echo "===== admin inbound-cidrs 확인 ====="
+grep "^[[:space:]]*alb.ingress.kubernetes.io/inbound-cidrs:" "$INGRESS_FILE"
 
 echo
 read -p "ingress.yaml 변경사항을 commit/push 할까요? (y/N): " PUSH_CONFIRM
 
 if [[ "$PUSH_CONFIRM" =~ ^[Yy]$ ]]; then
+  cd "$CONFIG_REPO"
   git add manifests/admin/overlays/prod/ingress.yaml
 
   if git diff --cached --quiet; then
@@ -139,9 +139,8 @@ else
 fi
 
 echo
-echo "===== infra repo diff ====="
-cd "$INFRA_REPO"
-git diff -- infra/envs/prod/infra/terraform.tfvars
+echo "===== EKS public_access_cidrs 확인 ====="
+grep "public_access_cidrs" "$TFVARS_FILE"
 
 echo
 read -p "EKS public_access_cidrs 변경을 terraform apply 할까요? (y/N): " APPLY_CONFIRM
