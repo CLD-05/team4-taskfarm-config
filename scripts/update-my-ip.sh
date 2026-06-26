@@ -5,20 +5,12 @@ AWS_REGION="ap-northeast-2"
 
 validate_ipv4() {
   local ip="$1"
-  local IFS='.'
-  local -a octets
 
-  [[ "$ip" =~ ^[0-9]+(\.[0-9]+){3}$ ]] || return 1
+  ip="${ip//$'\r'/}"
+  ip="${ip#"${ip%%[![:space:]]*}"}"
+  ip="${ip%"${ip##*[![:space:]]}"}"
 
-  read -ra octets <<< "$ip"
-
-  for octet in "${octets[@]}"; do
-    if (( octet < 0 || octet > 255 )); then
-      return 1
-    fi
-  done
-
-  return 0
+  [[ "$ip" =~ ^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$ ]]
 }
 
 CONFIG_REPO="$(cd "$(dirname "$0")/.." && pwd)"
@@ -84,15 +76,15 @@ if jq -e 'to_entries[] | select(.value == "" or .value == null or .value == "0.0
   exit 1
 fi
 
-while read -r member ip; do
+while IFS=$'\t' read -r member ip; do
   if ! validate_ipv4 "$ip"; then
     echo "members-ip.json에 잘못된 IP 형식이 있습니다: $member=$ip" >&2
     exit 1
   fi
-done < <(jq -r 'to_entries[] | "\(.key) \(.value)"' "$MEMBERS_FILE")
+done < <(jq -r 'to_entries[] | [.key, .value] | @tsv' "$MEMBERS_FILE")
 
 CIDRS_CSV="$(jq -r '[.[] + "/32"] | join(",")' "$MEMBERS_FILE")"
-CIDRS_TFVARS_BLOCK="$(jq -r '[.[] + "/32"] | map("  \"" + . + "\",") | join("\n")' "$MEMBERS_FILE")"
+CIDRS_TFVARS="$(jq -r '[.[] + "/32"] | map("\"" + . + "\"") | join(", ")' "$MEMBERS_FILE")"
 
 echo "생성된 CIDR 목록:"
 echo "$CIDRS_CSV"
@@ -109,7 +101,7 @@ if ! grep -q "alb.ingress.kubernetes.io/inbound-cidrs" "$INGRESS_FILE"; then
   exit 1
 fi
 
-sed -i.bak -E "s#(alb.ingress.kubernetes.io/inbound-cidrs: ).*#\1\"$CIDRS_CSV\"#" "$INGRESS_FILE"
+sed -i.bak -E "s#^([[:space:]]*)alb.ingress.kubernetes.io/inbound-cidrs:.*#\1alb.ingress.kubernetes.io/inbound-cidrs: \"$CIDRS_CSV\"#" "$INGRESS_FILE"
 rm -f "$INGRESS_FILE.bak"
 
 echo "terraform.tfvars public_access_cidrs 갱신 중..."
@@ -119,7 +111,7 @@ if ! grep -q "public_access_cidrs" "$TFVARS_FILE"; then
   exit 1
 fi
 
-sed -i.bak -E "s#public_access_cidrs = \[.*\]#public_access_cidrs = [$CIDRS_TFVARS]#" "$TFVARS_FILE"
+sed -i.bak -E "s#^[[:space:]]*public_access_cidrs[[:space:]]*=[[:space:]]*\[.*\]#public_access_cidrs = [$CIDRS_TFVARS]#" "$TFVARS_FILE"
 rm -f "$TFVARS_FILE.bak"
 
 echo
