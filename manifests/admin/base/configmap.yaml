@@ -12,4 +12,4 @@ data:
   SERVER_SERVLET_CONTEXT_PATH: "/admin"
 
   MFA_KMS_ENABLED: "true"
-  MFA_KMS_KEY_ID: "arn:aws:iam::194722398200:role/team4-dev-admin-mfa"
+  MFA_KMS_KEY_ID: "arn:aws:kms:ap-northeast-2:194722398200:key/01860773-78d4-4ef8-9f7a-24acbe66c538"
