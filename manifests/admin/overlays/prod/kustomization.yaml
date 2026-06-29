@@ -13,7 +13,7 @@ patches:
 images:
 - name: taskfarm-admin-img
   newName: 194722398200.dkr.ecr.ap-northeast-2.amazonaws.com/team4-prod-taskfarm-admin
-  newTag: prod-2638971
+  newTag: prod-5709e31
 configMapGenerator:
 - behavior: merge
   literals:
