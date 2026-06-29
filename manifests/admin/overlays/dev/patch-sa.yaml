@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: taskfarm-admin-sa
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::194722398200:role/team4-dev-admin-mfa

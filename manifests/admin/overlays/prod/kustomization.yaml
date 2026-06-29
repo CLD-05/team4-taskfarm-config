@@ -10,6 +10,10 @@ patches:
   target:
     kind: Deployment
     name: taskfarm-admin
+- path: patch-sa.yaml
+  target:
+    kind: ServiceAccount
+    name: taskfarm-admin-sa
 images:
 - name: taskfarm-admin-img
   newName: 194722398200.dkr.ecr.ap-northeast-2.amazonaws.com/team4-prod-taskfarm-admin
@@ -18,4 +22,5 @@ configMapGenerator:
 - behavior: merge
   literals:
   - SPRING_PROFILES_ACTIVE=prod
+  - MFA_KMS_KEY_ID=arn:aws:kms:ap-northeast-2:194722398200:key/1afab23f-a6e3-4eeb-988c-61b4c6c5369c
   name: taskfarm-admin-config

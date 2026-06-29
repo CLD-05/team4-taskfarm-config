@@ -1,7 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: taskfarm-dev
-  # secretstore.yaml 제거 — ClusterSecretStore 사용
 resources:
 - ../../base
 - externalsecret.yaml
@@ -11,6 +10,10 @@ patches:
   target:
     kind: Deployment
     name: taskfarm-admin
+- path: patch-sa.yaml
+  target:
+    kind: ServiceAccount
+    name: taskfarm-admin-sa
 images:
 - name: taskfarm-admin-img
   newName: 194722398200.dkr.ecr.ap-northeast-2.amazonaws.com/team4-dev-taskfarm-admin
@@ -19,4 +22,5 @@ configMapGenerator:
 - behavior: merge
   literals:
   - SPRING_PROFILES_ACTIVE=dev
+  - MFA_KMS_KEY_ID=arn:aws:kms:ap-northeast-2:194722398200:key/01860773-78d4-4ef8-9f7a-24acbe66c538
   name: taskfarm-admin-config

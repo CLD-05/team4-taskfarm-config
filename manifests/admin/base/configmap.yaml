@@ -10,6 +10,7 @@ data:
   JPA_DDL_AUTO: "validate"
   AWS_REGION: "ap-northeast-2"
   SERVER_SERVLET_CONTEXT_PATH: "/admin"
-
+  # MFA: 켜기는 공통, 키 ID는 환경별(overlay configMapGenerator)에서 주입
   MFA_KMS_ENABLED: "true"
-  MFA_KMS_KEY_ID: "arn:aws:kms:ap-northeast-2:194722398200:key/01860773-78d4-4ef8-9f7a-24acbe66c538"
+  # MFA_KMS_KEY_ID 는 base에서 제거 — dev/prod overlay가 각자 환경 키로 merge
+ 
