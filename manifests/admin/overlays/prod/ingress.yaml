@@ -8,6 +8,8 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /admin/actuator/health
+    alb.ingress.kubernetes.io/success-codes: "200"
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     # admin은 노출 최소화 — 관리자 ip만 허용 권장
     # alb.ingress.kubernetes.io/inbound-cidrs: <office-ip>/32
