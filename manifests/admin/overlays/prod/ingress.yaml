@@ -14,7 +14,7 @@ metadata:
     # admin은 노출 최소화 — 관리자 ip만 허용 권장
     # alb.ingress.kubernetes.io/inbound-cidrs: <office-ip>/32
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:194722398200:certificate/7088d446-8124-4476-9b87-e88b978a3924
-    alb.ingress.kubernetes.io/inbound-cidrs: "125.139.157.160/32,211.206.172.160/32,175.213.149.91/32,110.8.45.204/32,1.240.183.169/32"
+    alb.ingress.kubernetes.io/inbound-cidrs: "220.124.62.170/32,211.206.172.160/32,175.213.149.91/32,110.8.45.204/32,1.240.183.169/32"
 spec:
   ingressClassName: alb
   rules:
